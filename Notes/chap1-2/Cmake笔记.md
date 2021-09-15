@@ -1,8 +1,9 @@
 # Cmake 学习笔记
 
->基于书籍《Cmake 实践》的笔记
+>本文为基于书籍《Cmake 实践》的笔记
 >书籍链接：https://pan.baidu.com/s/1CDW89ZuK5NlvceU-SAMxUA 
 提取码：x11y 
+>Cmake官方教材：https://cmake.org/cmake/help/latest/guide/tutorial/index.html
 >笔记基于 Linux 系统
 
 ## 1. 简单的CMake编译
@@ -104,64 +105,28 @@ make clean
     ADD_EXECUTABLE(hello main.c;func.c)
     ```
 
-## 2. 更好一点的 Hello World
+## 2. 复杂一点的 CMake 编译
 
-本小节的任务是让前面的 Hello World 更像一个工程，我们需要作的是：
+本小节的任务是让程序更像是一个工程，我们需要作的是：
 
 * 为工程添加一个子目录 src，用来放置工程源代码；
-* 添加一个子目录 doc，用来放置这个工程的文档 hello.txt；
+* 添加一个子目录 doc，用来放置这个工程的文档 doc.txt；
 * 在工程目录添加文本文件 COPYRIGHT, README；
-* 在工程目录添加一个 runhello.sh 脚本，用来调用 hello 二进制；
+* 在工程目录添加一个 run.sh 脚本，用来调用二进制文件；
 * 将构建后的目标文件放入构建目录的 bin 子目录；
-* 最终安装这些文件：将 hello 二进制与 runhello.sh 安装至/usr/bin，将 doc 目录的内容以及 COPYRIGHT/README 安装到/usr/share/doc/cmake/t2。
+* 最终安装这些文件：将二进制文件 与 run.sh 安装至/usr/bin，将 doc 目录的内容以及 COPYRIGHT/README 安装到/usr/share/doc/cmake/t2。
 
-**准备工作：**
-
-创建一个新的文件夹`t2`
-将 t1 工程的 main.c 和 CMakeLists.txt 拷贝到 t2 目录中。
 
 ### 2.1 外部构建
 
 之前我们使用的`cmake`构建方式为内部构建，我们可以在目录中看到很多`cmake`产生的中间文件。为了让文件看起来更整洁一些，我们可以使用外部构建的方法。
 
-首先将之前生成的文件除了`main.cpp`和`CMakeLists.txt`都删掉。
-
-然后在我们一开始创建文件夹下创建`build`目录，进入`build`，运行`cmake ..`（注意，之前的命令为`cmake .`，只有一个`.`的意思是在当前目录下执行`cmake`而两个`.`则是在父目录下执行`cmake`）
+首先在我们一开始创建文件夹下创建`build`目录，进入`build`，运行`cmake ..`（注意，之前的命令为`cmake .`，只有一个`.`的意思是在当前目录下执行`cmake`而两个`.`则是在父目录下执行`cmake`）
 
 此时，所有的中间文件都被保存在了`build`中。
 
-```
-# pragma once
-# include <string>
+### include 和 src
 
-class Gun
-{
-private:
-    /* data */
-    std::string _type;
-    int _bullet_count;
-
-public:
-    Gun(std::string type)
-    {
-        this->_bullet_count = 0;
-        this->_type = type;
-    }
-
-    void addBullet(int bullet_num);
-    void shoot();
-};
-
-```
-
-```
-#include "Gun.h"
-
-void Gun::addBullet(int bullet_num)
-{
-    this->addBullet
-}
-void Gun::shoot()
-```
+在文件下创建`include`和`src`目录，分别用于存放工程的头文件和源文件。之后，在`include`中创建
 
 

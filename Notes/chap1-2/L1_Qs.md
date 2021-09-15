@@ -6,9 +6,11 @@
 
 当你对某个研究领域不了解时，最好是从综述文献开始了解这个领域的整体⾯貌。SLAM 作为一个近30 年的研究领域，⾄今也存在着大量的综述、总结类的文章。请阅读本次作业 paper/⽬录下的文章 [1–3]（其中 [3] 是中文文献），了解这个领域的大致情况。如果你的时间有限，可以仅阅读每篇文章的第一章（也就是引⾔一章），然后回答下列问题：
 
-文献链接：
-链接：https://pan.baidu.com/s/11CKH9p45U8jViunUrv7qBQ 
-提取码：aiic 
+>文献链接：
+>链接：https://pan.baidu.com/s/11CKH9p45U8jViunUrv7qBQ 
+>提取码：aiic
+>我对于其中一些文献解读：
+>https://zhuanlan.zhihu.com/p/410263180
 
 1. SLAM 会在哪些场合中用到？⾄少列举三个方向。
 2. SLAM 中定位与建图是什么关系？为什么在定位的同时需要建图？
@@ -45,8 +47,7 @@
 #### Q1-4
 
 答：
-* Smith, R.C. and P. Cheeseman, On the Representation and Estimation of Spatial Uncertainty. International Journal of
-Robotics Research, 1986. 5
+* Smith, R.C. and P. Cheeseman, On the Representation and Estimation of Spatial Uncertainty. International Journal of Robotics Research, 1986. 5
 * Se, S., D. Lowe and J. Little, Mobile robot localization and mapping with uncertainty using scale­invariant visual
 landmarks. The international Journal of robotics Research, 2002. 21
 * Mullane, J., et al., A Random­Finite­Set Approach to Bayesian SLAM. IEEE Transactions on Robotics, 2011
@@ -60,6 +61,81 @@ cmake 是一种常用、方便的，用于组织 Linux 下 C++ 程序的工具�
 3. 默认用 Release 模式编译这个工程。
 4. 如果用户使用 sudo make install，那么将 hello.h 放⾄/usr/local/include/下，将 libhello.so 放⾄/usr/local/lib/下。请按照上述要求组织源代码文件，并书写 CMakeLists.txt。
 
-#### 2-1 
+>不建议直接查看高博提供的教材，理由为年代久远了。目前 `CMake` 官方提供的文档已经很完善了，英文好的同学可以直接通过下方连接查看。此外，也可以查看知乎上的中文简单版教程。另外，关于 `CMake` `ROS`中的`Catkin_make`似乎是一个更方便的选择。
+
+[官网文档链接](https://cmake.org/cmake/help/latest/guide/tutorial/index.html# "card")
+
+[知乎中文链接](https://zhuanlan.zhihu.com/p/119426899 "card")
 
 
+### Q3 理解 ORB-SLAM2 框架
+
+ORB-SLAM2 是⼀个⾮常经典的视觉 SLAM 开源⽅案，它可以作为你学习 SLAM 的范本。但是现在我们还没有讲解很多关于视觉 SLAM 的知识，所以仅从代码⼯程⾓度上来了解 ORB-SLAM2。请按照提⽰完成以下⼯作。
+1. 从 github.com 下载 ORB-SLAM2 的代码。地址在：https://github.com/raulmur/ORB_SLAM2.提⽰：在安装 git 之后，可以⽤ git clone https://github.com/raulmur/ORB_SLAM2 命令下载ORB-SLAM2。下载完成后，请给出终端截图。
+2. 此时我们不着急直接运⾏ ORB-SLAM2，让我们⾸先来看它的代码结构。ORB-SLAM2 是⼀个cmake ⼯程，所以可以从 CMakeLists.txt 上⾯来了解它的组织⽅式。阅读 ORB-SLAM2 代码⽬录下的 CMakeLists.txt，回答问题：
+(a) ORB-SLAM2 将编译出什么结果？有⼏个库⽂件和可执⾏⽂件？
+(b) ORB-SLAM2 中的 include, src, Examples 三个⽂件夹中都含有什么内容？
+(c) ORB-SLAM2 中的可执⾏⽂件链接到了哪些库？它们的名字是什么？
+你会发现 ORB-SLAM2 从代码组织⽅式来看并不复杂。实际上⼤部分中⼩型库都不会很复杂，⽽更⼤的库可能在 CMakeLists.txt 中有各种各样的兼容性检查，确保它们在各个平台上都能顺利运⾏。
+
+#### Q3-2a
+
+答：
+
+编译后会生成下列可执行文件：
+
+* gbd_tum
+* stereo_kitti
+* stereo_euroc
+* mono_tum
+* mono_kitti
+* mono_euroc
+
+一个库文件： lib*.so
+
+#### Q3-2b
+
+Example 共有4个例子：
+
+* Monocular
+* RGB-D
+* ROS
+* Stereo
+
+`src`中包含着 `ORB-SLAM2` 库的所有源文件；
+`include`中包含着 `ORB-SLAM2` 库中的所有头文件。
+
+#### Q3-2c
+
+可执行文件链接的第三方库有：
+
+* OpenCV_LIBS
+* EIGEN3_LIBS
+* Pangolin_LIBRARIES
+* DBoW2
+* g2o
+
+生成库： libORB_SLAM2.so
+
+### Q4 使用摄像头或视频运行 ORB-SLAM2
+
+了解⼀样东西最快的⽅式是⾃⼰上⼿使⽤它，不要担⼼弄坏你的笔记本，⼤部分时候它都是你可靠的伙伴。这个作业中，我将指导你⽤⾃⼰的笔记本摄像头读取到的图像，来运⾏ ORB-SLAM2，看看它能不能实际⼯作。你也可以外接⼀个 usb 摄像头，这会让你的⼿更加灵活⼀些（不⽤费⼒端着笔记本到处跑）。或者，如果你的电脑碰巧没有摄像头/摄像头故障了/你正在⽤虚拟机，那我们也可以在事先录制好的⼀段视频中运⾏ ORB-SLAM2（见 code/myvideo.mp4，这是我在特蕾西亚草坪散步的时候⽤⼿机拍摄的⼩视频）。
+
+由于我们还没有讲过任何关于 OpenCV 或者图像⽅⾯的问题，所以本节我给你写好了⼀个 myslam.cpp⽂件（如果你使⽤录制视频，请⽤ myvideo.cpp）
+。这个⽂件会打开你⾃带的摄像头（或视频），读取图像，并交给 ORB-SLAM2 处理。由于你现在已经了解 cmake 原理了，所以我要请你⾃⼰来思考如何将这个⽂
+件与 ORB-SLAM2 结合起来。相信我，这件事并不难。myslam.cpp 和 myvideo.cpp ⽂件见本次作业的code/⽂件夹下。
+
+下⾯是本题的提⽰：
+
+1. 为了实际运⾏ ORB-SLAM2，你需要安装它的依赖项，并通过它本⾝的编译。它的依赖项见它⾃⼰的 github 主页，请按照主页上的提⽰安装好 ORB-SLAM2 的依赖项。具体来说，对于 pangolin（⼀个 GUI 库），你需要下载并安装它，它同样是个 cmake ⼯程，所以我不必谈怎么编译安装的细节了。对于 opencv 和 eigen3，你可以简单的⽤⼀⾏命令来解决：
+
+```
+sudo apt-get install libopencv-dev libeigen3-dev libqt4-dev qt4-qmake libqglviewer-dev libsuitesparse-dev
+libcxsparse3.1.2 libcholmod-dev
+```
+
+其中⼀部分是 g2o 的依赖项，现阶段不⽤太在意它的具体内容。⾄此，你应该可以顺利编译 ORB-SLAM2 了，请给出它编译完成的截图。
+
+2. 注意到，ORB-SLAM2 提供了若⼲数据集中的运⾏⽰例，这可以作为我们运⾏⾃⼰摄像头程序的参考，因为它们很相似。对于数据集上的⽰例，ORB-SLAM2 会⾸先读取数据集中的图像，再放到SLAM 中处理。那么对于我们⾃⼰的摄像头，同样可以这样处理。所以最⽅便的⽅案是直接将我们的程序作为⼀个新的可执⾏程序，加⼊到 ORB-SLAM2 ⼯程中。那么请问，如何将 myslam.cpp或 myvideo.cpp 加⼊到 ORB-SLAM2 ⼯程中？请给出你的 CMakeLists.txt 修改⽅案。
+
+3. 现在你的程序应该可以编译出结果了。但是我们现在还没有谈相机标定，所以你还没办法标定你的摄像头。但没有关系，我们也可以⽤⼀个不那么好的标定参数，先来试⼀试效果（所幸 ORB-SLAM2对标定参数不太敏感）。我为你提供了⼀个 myslam.yaml（myvideo.yaml），这个⽂件是我们假想的标定参数。现在，⽤这个⽂件让 ORB-SLAM2 运⾏起来，看看 ORB-SLAM2 的实际效果吧。请给出运⾏截图，并谈谈你在运⾏过程中的体会。注意，本题只需你能运⾏ ORB-SLAM2 即可，并不是说“成功地运⾏ SLAM”。要顺利运⾏ SLAM 还需要⼀些经验和技巧，希望你能在动⼿过程中有所体会。作为建议，请尽量在光照充⾜、纹理丰富的场合下运⾏程序。如果默认参数不合适，你也可以尝试换⼀换参数。
