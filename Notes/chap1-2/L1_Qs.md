@@ -1,3 +1,4 @@
+#! https://zhuanlan.zhihu.com/p/411036811
 # SLAM 十四讲作业及答案
 
 ## Lecture 1
@@ -141,90 +142,22 @@ libcxsparse3.1.2 libcholmod-dev
 3. 现在你的程序应该可以编译出结果了。但是我们现在还没有谈相机标定，所以你还没办法标定你的摄像头。但没有关系，我们也可以⽤⼀个不那么好的标定参数，先来试⼀试效果（所幸 ORB-SLAM2对标定参数不太敏感）。我为你提供了⼀个 myslam.yaml（myvideo.yaml），这个⽂件是我们假想的标定参数。现在，⽤这个⽂件让 ORB-SLAM2 运⾏起来，看看 ORB-SLAM2 的实际效果吧。请给出运⾏截图，并谈谈你在运⾏过程中的体会。注意，本题只需你能运⾏ ORB-SLAM2 即可，并不是说“成功地运⾏ SLAM”。要顺利运⾏ SLAM 还需要⼀些经验和技巧，希望你能在动⼿过程中有所体会。作为建议，请尽量在光照充⾜、纹理丰富的场合下运⾏程序。如果默认参数不合适，你也可以尝试换⼀换参数。
 
 
-#### Q4-1 ORB-SLAM2 安装过程 小tips 和 踩坑
+#### Q4-1 ORB-SLAM2 安装
 
->ubuntu版本：20.04
->首先安装过程参考：https://blog.csdn.net/learning_tortosie/article/details/79881165
+此过程为多次踩坑，已经写到另外一篇文章里了。
 
-**Tips：**
+[文章链接](https://zhuanlan.zhihu.com/p/411027681 "card")
 
-**1. 每次编译错误后都要手动删除主页面的`build`和两个第三方库中的`build`文件。**
-**2. 直接使用`.sh`文件安装报错内容会比较多，可以打开`.sh`文件用命令行手动一步一步的安装，方便查看错误提示。**
 
-**坑一： 找不到 OpenCV**
+#### Q4-2，3
 
-具体描述：`./build.sh`过程中报错找不到`OpenCV`，但实际上以及安装了`OpenCV4`的最新版本，成功运行了其中的`demo`。
+我并没有按照题目的要求做，而是从网盘上下载了一个数据集，用这个数据集跑了一个历程。
 
-![ ](./pics/4.png)
+>数据集链接：https://pan.baidu.com/s/1Y_EGWrlEJDshD-YNeDwp5Q
+>
+>提取码：afzs
 
-解决方法：彻底删除`OpenCV4`，安装`OpenCV3`。
-
->删除过错参考：https://blog.csdn.net/Aidam_Bo/article/details/110121752
->并将删除指令全部修改为`opencv4`相关的。无视所有的找不到文件的提示，删除干净为止。
-
-更换版本后可以找到`OpenCV`了，但还有其他问题。
-
-**坑二： “cc1plus: error: bad value (‘tigerlake’)进行‘-march=’开关”编译错误**
-
-具体描述：`./build.sh`过程报错：
-
+使用指令：
 ```
-cc1plus: error: bad value (‘tigerlake’) for ‘-march=’ switch
-
-cc1plus: note: valid arguments to ‘-march=’ switch are: nocona core2 nehalem corei7 westmere sandybridge corei7-avx ivybridge core-avx-i haswell core-avx2 broadwell skylake skylake-avx512 cannonlake icelake-client icelake-server cascadelake bonnell atom silvermont slm goldmont goldmont-plus tremont knl knm x86-64 eden-x2 nano nano-1000 nano-2000 nano-3000 nano-x2 eden-x4 nano-x4 k8 k8-sse3 opteron opteron-sse3 athlon64 athlon64-sse3 athlon-fx amdfam10 barcelona bdver1 bdver2 bdver3 bdver4 znver1 znver2 btver1 btver2 native
-
-cc1plus: error: bad value (‘tigerlake’) for ‘-mtune=’ switch
-
-cc1plus: note: valid arguments to ‘-mtune=’ switch are: nocona core2 nehalem corei7 westmere sandybridge corei7-avx ivybridge core-avx-i haswell core-avx2 broadwell skylake skylake-avx512 cannonlake icelake-client icelake-server cascadelake bonnell atom silvermont slm goldmont goldmont-plus tremont knl knm intel x86-64 eden-x2 nano nano-1000 nano-2000 nano-3000 nano-x2 eden-x4 nano-x4 k8 k8-sse3 opteron opteron-sse3 athlon64 athlon64-sse3 athlon-fx amdfam10 barcelona bdver1 bdver2 bdver3 bdver4 znver1 znver2 btver1 btver2 generic native
-
-make[2]: *** [makefileCommon/compile.core.mk:240: /home/josue/Documents/of_v0.11.0_linux64gcc6_release/libs/openFrameworksCompiled/lib/linux64/obj/Release/libs/openFrameworks/events/ofEvents.o] Error 1
-
-make[1]: *** [makefileCommon/compile.core.mk:204: Release] Error 2
-
-make[1]: Leaving directory '/home/josue/Documents/of_v0.11.0_linux64gcc6_release/libs/openFrameworksCompiled/project'
-make: *** [/home/josue/Documents/of_v0.11.0_linux64gcc6_release/libs/openFrameworksCompiled/project/makefileCommon/compile.project.mk:125: Release] Error 2
+./Examples/Monocular/mono_tum Vocabulary/ORBvoc.txt Examples/Monocular/TUMX.yaml PATH_TO_SEQUENCE_FOLDER
 ```
-
-解决方法：更新 `gcc` 和 `g++`，因为`ubuntu 20.04`默认安装的是`gcc-9`和`g++-9`，升级一下就可以了。
-
-```
-sudo apt install gcc-10 g++-10
-sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 100 --slave /usr/bin/g++ g++ /usr/bin/g++-10 --slave /usr/bin/gcov gcov /usr/bin/gcov-10
-```
-
->参考：https://stackoverflow.com/questions/64493692/cc1plus-error-bad-value-tigerlake-for-march-switch-compilation-error
-
-
-升级后可以正常编译第三方库 `DBoW2`
-
-![ ](./pics/5.png)
-
-**坑三： 编译文件时报错**
-
-具体描述：`./build.sh`过程报错：
-
-![ ](./pics/6.png)
-
-原因：从报错的提示中可以看出，'Eigen::AlignedBit' 已弃用 [-Wdeprecated-declarations]。原因是使用的`Eigen`的版本过高。
-
-解决方法：降低`Eigen`的版本到 3.3.
-
-首先卸载原来的版本：
-
-```
-sudo rm -rf /usr/local/include/eigen3
-```
-
-然后从[Eigen官方](https://gitlab.com/libeigen/eigen/-/releases)下载`Eigen 3.2.1 .zip`
-
-解压后安装：
-
-```
-mkdir build && cd build
-cmake -D CMAKE_BUILD_TYPE=Release –D CMAKE_INSTALL_PREFIX=/usr/local ..
-make -j
-sudo make install
-```
-
->参考：https://blog.csdn.net/u010003609/article/details/100676041
-
