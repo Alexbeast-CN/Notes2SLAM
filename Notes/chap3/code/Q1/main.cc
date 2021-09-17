@@ -21,8 +21,8 @@ int main(int argc, char const *argv[])
     auto C = A.ldlt();
 
     // 输出结果
-    cout << "The result of QR decomposition is \n" << B << endl;
-    cout << "The result of Cholesky decomposition is \n" << C << endl; 
+    // cout << "The result of QR decomposition is \n" << B << endl;
+    // cout << "The result of Cholesky decomposition is \n" << C << endl; 
 
     return 0;
 }
