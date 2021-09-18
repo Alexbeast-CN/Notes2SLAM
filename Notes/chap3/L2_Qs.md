@@ -38,8 +38,55 @@ Eigen（http://eigen.tuxfamily.org）是常⽤的 C++ 矩阵运算库，具有�
 解：
 
 ```cpp
+/* main.cpp */
+#include <iostream>
+#include <Eigen/Core>
+#include <Eigen/Dense>
 
+using namespace Eigen;
+using namespace std;
+
+#define MATRIX_SIZE 100
+
+// 编程实现 A 为 100 × 100 随机矩阵时，⽤ QR 和 Cholesky 分解求 x 的程序
+int main(int argc, char const *argv[])
+{
+    // 创建随机矩阵 A[100x100] 并输出
+    Matrix<double, MATRIX_SIZE, MATRIX_SIZE> A
+    = MatrixXd::Random(MATRIX_SIZE, MATRIX_SIZE);
+    // cout << "Matrix A is: \n" << A << endl;
+
+    // 创建随机
+    Matrix<double, MATRIX_SIZE, 1> B = MatrixXd::Random(MATRIX_SIZE, 1);
+    // cout << "Matrix B is: \n" << B << endl;
+
+    // 求解 Ax = B
+    // 1. QR 分解
+    auto x = A.colPivHouseholderQr().solve(B);
+    cout << "QR decompostion: \n x = " << x << endl << endl; 
+
+    // 2. Cholesky 分解
+    auto y = A.ldlt().solve(B);
+    cout << "Cholesky decompostion: \n x = " << y << endl; 
+
+    return 0;
+}
 ```
+
+
+```makefile
+#CmakeLists.txt
+cmake_minimum_required(VERSION 2.8)
+project(Q1)
+
+set(CMAKE_BUILD_TYPE "Release")
+set(CMAKE_CXX_FLAGS "-O3")
+
+# 添加Eigen头文件
+include_directories("/usr/include/eigen3")
+add_executable(Q1ans main.cpp)
+```
+
 
 ### Q2 几何运算练习
 
@@ -50,3 +97,126 @@ Eigen（http://eigen.tuxfamily.org）是常⽤的 C++ 矩阵运算库，具有�
 2. 请注意 Eigen 在使⽤四元数时的虚部和实部顺序。
 3. 参考答案为 p 2 = [1.08228, 0.663509, 0.686957] T 。你可以⽤它验证程序是否正确。
 
+解：
+
+```cpp
+/* main.cpp */
+#include <iostream>
+#include <cmath>
+#include <Eigen/Core>
+#include <Eigen/Geometry>
+
+using namespace std;
+using namespace Eigen;
+
+int main(int argc, char const *argv[])
+{
+    // 创建两个四元数(首位是实数)，并归一化
+    Quaterniond q1(0.55,0.3,0.2,0.2);
+    Quaterniond q2(-0.1,0.3,-0.7,0.2);
+    // 归一化可以使四元数生成正交矩阵(注意没有d)
+    q1.normalize();
+    q2.normalize();
+
+    // 创建两个位移向量
+    Vector3d t1(0.7,1.1,0.2);
+    Vector3d t2(-0.1,0.4,0.8);
+
+    // 创建 点 p_1
+    Vector3d p_1(0.5,-0.1,0.2);
+
+    // 旋转矩阵1
+    Isometry3d T1 = Isometry3d::Identity();                // 矩阵初始化
+    T1.rotate(q1);                                     
+    T1.pretranslate(t1);     
+
+    // 旋转矩阵2
+    Isometry3d T2 = Isometry3d::Identity();                // 矩阵初始化      
+    T2.rotate(q2);                                     
+    T2.pretranslate(t2); 
+
+    // 通过一次变换得到 p 点的世界坐标
+    // 第二次变换得到 p 点在 2 号的坐标
+    Vector3d p_2 =T2 * T1.inverse() * p_1;
+
+
+    cout << p_2.transpose() << endl;
+    return 0;
+}
+```
+
+### Q3 旋转的表达
+
+课程中提到了旋转可以⽤旋转矩阵、旋转向量与四元数表达，其中旋转矩阵与四元数是⽇常应⽤中常见的表达⽅式。请根据课件知识，完成下述内容的证明。
+
+1. 设有旋转矩阵 $R$，证明 $R^T R = I$ 且 $det(R) = +1^2$ 。
+
+解：
+$$
+\begin{aligned}    
+&\because R\,\,is\,\,orthoronomal \\
+&\therefore R^{-1} = R^T \\
+&\therefore R^TR = R^{-1}R = I \\ \\
+&\because during\,\,rotation\,\,the\,\,basics\,\,are\,\,not\,\,scaled\\
+&\therefore det(R) = i\times{j} = +1^2
+\end{aligned}
+$$
+
+2. 设有四元数 $q$，我们把虚部记为 $ε$，实部记为 $η$，那么 $q = (ε, η)$。请说明 $ε$ 和 $η$ 的维度。
+
+答：
+
+$ε$ 是3维，$η$ 是1维
+
+3. 定义运算$^+$和$^⊕$为：
+
+$$
+\begin{aligned}
+    q^{+}=
+    \begin{bmatrix}
+        \eta^1 - \epsilon^\times & \epsilon \\
+        -\epsilon^T & \eta \\
+    \end{bmatrix},
+        q^{\oplus}=
+    \begin{bmatrix}
+        \eta^1 + \epsilon^\times & \epsilon \\
+        -\epsilon^T & \eta \\
+    \end{bmatrix}
+\end{aligned}
+$$
+请证明对任意单位四元数 $q_1$ , $q_2$ ，四元数乘法可写成矩阵乘法：
+
+$$
+q_1 · q_2 = q_1^+q_2
+$$
+
+或：
+
+$$
+q_1 · q_2 = q_1^{\oplus}q_2
+$$
+
+解：
+
+$$
+\begin{aligned}    
+q_1 &= [\eta_1,\epsilon_1]^T\\
+q_2 &= [\eta_2,\epsilon_2]^T\\
+q_1\cdot{q_2} = 
+\end{aligned}
+$$
+### Q4 罗德里格斯公式的证明
+
+罗德⾥格斯公式描述了从旋转向量到旋转矩阵的转换关系。设旋转向量长度为 θ，⽅向为 n，那么旋转矩阵 R 为：
+
+$$
+R = cosθI − (1 − cos θ)nn^T + sin θn^∧ 
+$$
+
+解：
+
+$$
+\begin{aligned}
+    &\because
+\end{aligned}
+$$
