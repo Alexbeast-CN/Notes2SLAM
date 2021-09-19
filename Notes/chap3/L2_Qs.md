@@ -97,6 +97,13 @@ add_executable(Q1ans main.cpp)
 2. 请注意 Eigen 在使⽤四元数时的虚部和实部顺序。
 3. 参考答案为 p 2 = [1.08228, 0.663509, 0.686957] T 。你可以⽤它验证程序是否正确。
 
+>做题之前，可以先看查看下列链接，以便帮助你更好的了解四元数
+
+[3blue1brown 解释四元数『熟肉』on bilibili](https://www.bilibili.com/video/BV1SW411y7W1?spm_id_from=333.999.0.0 "card")
+
+[有关四元数的文章+视频『生肉』](https://eater.net/quaternions "card")
+
+![ ](./pics/9.png)
 解：
 
 ```cpp
@@ -149,7 +156,7 @@ int main(int argc, char const *argv[])
 
 课程中提到了旋转可以⽤旋转矩阵、旋转向量与四元数表达，其中旋转矩阵与四元数是⽇常应⽤中常见的表达⽅式。请根据课件知识，完成下述内容的证明。
 
-1. 设有旋转矩阵 $R$，证明 $R^T R = I$ 且 $det(R) = +1^2$ 。
+1. 设有旋转矩阵 $R$，证明 $R^T R = I$ 且 $det(R) = +1^2$ 
 
 解：
 $$
@@ -157,7 +164,7 @@ $$
 &\because R\,\,is\,\,orthoronomal \\
 &\therefore R^{-1} = R^T \\
 &\therefore R^TR = R^{-1}R = I \\ \\
-&\because during\,\,rotation\,\,the\,\,basics\,\,are\,\,not\,\,scaled\\
+&\because during\,\,rotation\,\,the\,\,basics\,\,vectors\,\,are\,\,not\,\,scaled\\
 &\therefore det(R) = i\times{j} = +1^2
 \end{aligned}
 $$
@@ -197,14 +204,14 @@ q_1 · q_2 = q_1^{\oplus}q_2
 $$
 
 解：
+网络上已经有很不错的解答了，所以为就偷了一个懒。
 
-$$
-\begin{aligned}    
-q_1 &= [\eta_1,\epsilon_1]^T\\
-q_2 &= [\eta_2,\epsilon_2]^T\\
-q_1\cdot{q_2} = 
-\end{aligned}
-$$
+> 参考：https://blog.csdn.net/xuehuafeiwu123/article/details/74317286
+
+> tips:
+> Linux 系统中可以使用 [Matlab Online](https://matlab.mathworks.com/) 协助计算
+
+
 ### Q4 罗德里格斯公式的证明
 
 罗德⾥格斯公式描述了从旋转向量到旋转矩阵的转换关系。设旋转向量长度为 θ，⽅向为 n，那么旋转矩阵 R 为：
@@ -215,8 +222,5 @@ $$
 
 解：
 
-$$
-\begin{aligned}
-    &\because
-\end{aligned}
-$$
+> 参考： https://en.wikipedia.org/wiki/Rodrigues%27_rotation_formula
+
