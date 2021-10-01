@@ -1,3 +1,4 @@
+#! https://zhuanlan.zhihu.com/p/412466222
 
 # SLAM 十四讲作业及答案 - 2
 
@@ -224,3 +225,4 @@ $$
 
 > 参考： https://en.wikipedia.org/wiki/Rodrigues%27_rotation_formula
 
+后面还有一些习题，基本都可以通过前面的课程学习到，下面不再演示。
